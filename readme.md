@@ -1,24 +1,47 @@
-# Deno Test
+# Deno NPM Compatibility Test
 
 Trying to install https://buf.build/wcygan/flock/sdks/main:bufbuild/es using Deno.
 
-References:
+This repository is an artifact to help with the testing of https://github.com/denoland/deno/issues/27758, which is failing due to lack of graceful handling of [shasum](https://github.com/bufbuild/buf/issues/1719#issuecomment-2612280061)
 
-1. https://deno.com/blog/v1.29
-2. https://deno.com/blog/v1.44#support-for-private-npm-registries
-3. https://github.com/denoland/deno/issues/16105
-4. https://docs.npmjs.com/cli/v9/configuring-npm/npmrc
-5. https://github.com/denoland/deno/issues/16105#issuecomment-2083705776
-6. https://github.com/denoland/deno/pull/23560
-7. https://github.com/denoland/deno/issues/16105#issuecomment-2134954590
-8. https://github.com/denoland/deno/issues/16105#issuecomment-2138481860
-9. https://github.com/denoland/deno/pull/24042
-10. https://github.com/denoland/deno/issues/16105#issuecomment-2143072365
-11. [Buf Issue](https://github.com/bufbuild/protobuf-es/issues/1059)
-12. [Deno Issue](https://github.com/denoland/deno/issues/27758)
-13. [Other people using Buf in .npmrc](https://github.com/search?q=%22@buf:registry%3Dhttps://buf.build/gen/npm/v1/%22&type=code)
+## Quick Start
 
-> please do DENO_FUTURE=1 deno install before running DENO_FUTURE=1 deno task dev. Let me know if that works for you.
+```bash
+deno task start
+```
 
-> Support for private registries/.npmrc has shipped in Deno v1.44.0: https://deno.com/blog/v1.44#support-for-private-npm-registries.
+Expected output:
 
+```bash
+Hello, World!
+```
+
+Actual output:
+
+```bash
+error: Failed loading https://buf.build/gen/npm/v1/@buf%2fwcygan_flock.bufbuild_es for package "@buf/wcygan_flock.bufbuild_es"
+
+Caused by:
+    missing field `shasum` at line 1 column 358
+```
+
+## Deep dive into the issue
+
+```bash
+curl https://registry.npmjs.org/connectrpc | jq '.versions["0.0.0"].dist'
+{
+  "shasum": "2964ce658caf594aeffff9a7c0705e73b6bb5d53",
+  "tarball": "https://registry.npmjs.org/connectrpc/-/connectrpc-0.0.0.tgz"
+}
+```
+
+```bash
+curl https://buf.build/gen/npm/v1/@buf%2fwcygan_flock.bufbuild_es | jq '.versions["2.2.3-20241231000219-b035f3c109ea.1"].dist'
+{
+  "tarball": "https://buf.build/gen/npm/v1/@buf/wcygan_flock.bufbuild_es/-/wcygan_flock.bufbuild_es-2.2.3-20241231000219-b035f3c109ea.1.tgz"
+}
+```
+
+This missing `shasum` field in the Buf registry response is what causes Deno to fail when attempting to load the package, as Deno expects this field to be present in the package metadata.
+
+Perhaps Deno can handle this gracefully, just as npm does.
