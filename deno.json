@@ -1,5 +1,9 @@
 {
     "tasks": {
-        "start": "deno run main.ts"
+        "start": "deno run main.ts",
+        "run": "deno run --allow-env --allow-read --allow-net main.ts"
+    },
+    "imports": {
+        "@buf/flock": "npm:@buf/wcygan_flock.bufbuild_es@2.2.3-20241231000219-b035f3c109ea.1"
     }
 }
