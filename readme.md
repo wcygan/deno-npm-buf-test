@@ -14,6 +14,8 @@ References:
 8. https://github.com/denoland/deno/issues/16105#issuecomment-2138481860
 9. https://github.com/denoland/deno/pull/24042
 10. https://github.com/denoland/deno/issues/16105#issuecomment-2143072365
+11. [Buf Issue](https://github.com/bufbuild/protobuf-es/issues/1059)
+12. [Deno Issue](https://github.com/denoland/deno/issues/27758)
 
 > please do DENO_FUTURE=1 deno install before running DENO_FUTURE=1 deno task dev. Let me know if that works for you.
 
