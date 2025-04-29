@@ -1,5 +1,32 @@
 # Deno NPM Compatibility Test
 
+## Update 04/29/2025
+
+It works now! 🎉
+
+Fixes are from https://github.com/denoland/deno/issues/27758 / https://github.com/denoland/deno/pull/29093
+
+```bash
+deno install npm:@buf/wcygan_flock.bufbuild_es
+```
+
+```bash
+deno task start
+Task start deno run main.ts
+Hello, Deno!
+{
+  "$typeName": "profile.v1.User",
+  id: { "$typeName": "common.v1.UserId", value: "12345" },
+  username: "new_user",
+  picture: {
+    "$typeName": "profile.v1.ProfilePicture",
+    picture: { case: "hexColor", value: "#FF5733" }
+  }
+}
+```
+
+## Older context (before 04/29/2025)
+
 Trying to install https://buf.build/wcygan/flock/sdks/main:bufbuild/es using Deno.
 
 This repository is an artifact to help with the testing of https://github.com/denoland/deno/issues/27758, which is failing due to lack of graceful handling of [shasum](https://github.com/bufbuild/buf/issues/1719#issuecomment-2612280061)
